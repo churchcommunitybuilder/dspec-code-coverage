@@ -1,5 +1,5 @@
 {
-  "name": "churchcommunitybuilder/dspec-code-coverage",
+  "name": "ccb/dspec-code-coverage",
   "description": "Add code coverage to dspec",
   "license": "MIT",
   "repositories": [
