@@ -10,7 +10,7 @@
   ],
   "require": {
     "davedevelopment/dspec": "dev-master",
-    "phpunit/php-code-coverage": "2.2"
+    "phpunit/php-code-coverage": "~2.2"
   },
   "autoload": {
     "psr-4": {
