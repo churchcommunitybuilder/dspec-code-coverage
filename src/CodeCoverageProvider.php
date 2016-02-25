@@ -68,7 +68,14 @@ class CodeCoverageProvider implements ServiceProviderInterface
 
 			$outputDir = $container['coverage.outputDir'];
 
-			$writer = new \PHP_CodeCoverage_Report_HTML();
+			$reportWriterType = $container->offsetExists('coverage.reportWriter') ? $container['coverage.reportWriter'] : 'html';
+
+			switch ($reportWriterType) {
+				case 'html':
+				default:
+					$writer = new \PHP_CodeCoverage_Report_HTML();
+					break;
+			}
 			$writer->process($coverage, $outputDir);
 		});
 	}
