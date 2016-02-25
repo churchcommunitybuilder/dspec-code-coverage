@@ -8,7 +8,6 @@ use DSpec\Event\SuiteEndEvent;
 use DSpec\Event\SuiteStartEvent;
 use DSpec\Events;
 use DSpec\ServiceProviderInterface;
-use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class CodeCoverageProvider implements ServiceProviderInterface
@@ -26,8 +25,8 @@ class CodeCoverageProvider implements ServiceProviderInterface
 		$coverage = null;
 
 		$dispatcher->addListener(Events::SUITE_START, function(SuiteStartEvent $event) use (&$coverage, $container) {
-			$whitelistDirs = $container->offsetExists('coverage_whitelistDirs') ? $container['coverage_whitelistDirs'] : array();
-			$blacklistDirs = $container->offsetExists('coverage_blacklistDirs') ? $container['coverage_blacklistDirs'] : array();
+			$whitelistDirs = $container->offsetExists('coverage.whitelistDirs') ? $container['coverage.whitelistDirs'] : array();
+			$blacklistDirs = $container->offsetExists('coverage.blacklistDirs') ? $container['coverage.blacklistDirs'] : array();
 
 			$filter = null;
 			if ((is_array($whitelistDirs) && count($whitelistDirs) > 0) ||
@@ -41,15 +40,36 @@ class CodeCoverageProvider implements ServiceProviderInterface
 				}
 			}
 
+			$defaultOutputDir = '/tmp/code-coverage-report';
+			if ($container->offsetExists('coverage.outputDir')) {
+				$outputDir = $container['coverage.outputDir'];
+				if (strpos($outputDir, '/') !== 0) {
+					$outputDir = getcwd().'/'.$outputDir;
+				}
+				$parentDir = dirname($outputDir);
+
+				if (!is_writable($parentDir)) {
+					throw new \Exception("Directory {$parentDir} is not writable");
+				}
+			}
+
+			if (!isset($outputDir) || empty($outputDir)) {
+				$outputDir = $defaultOutputDir;
+			}
+
+			$container['coverage.outputDir'] = $outputDir;
+
 			$coverage = new \PHP_CodeCoverage(null, $filter);
 			$coverage->start($event->getExampleGroup()->getTitle());
 		});
 
-		$dispatcher->addListener(Events::SUITE_END, function(SuiteEndEvent $event) use (&$coverage) {
+		$dispatcher->addListener(Events::SUITE_END, function() use (&$coverage, $container) {
 			$coverage->stop();
 
+			$outputDir = $container['coverage.outputDir'];
+
 			$writer = new \PHP_CodeCoverage_Report_HTML();
-			$writer->process($coverage, '/tmp/code-coverage-report');
+			$writer->process($coverage, $outputDir);
 		});
 	}
 
