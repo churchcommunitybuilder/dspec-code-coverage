@@ -1,0 +1,25 @@
+{
+  "name": "churchcommunitybuilder/dspec-code-coverage",
+  "description": "Add code coverage to dspec",
+  "license": "MIT",
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/churchcommunitybuilder/dspec"
+    }
+  ],
+  "require": {
+    "davedevelopment/dspec": "dev-master",
+    "phpunit/php-code-coverage": "2.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "CCB\\DspecCodeCoverage\\" : "src/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.9.x-dev"
+    }
+  }
+}
