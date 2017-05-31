@@ -10,7 +10,7 @@
   ],
   "require": {
     "davedevelopment/dspec": "dev-master",
-    "phpunit/php-code-coverage": "~5.0"
+    "phpunit/php-code-coverage": "~4.0"
   },
   "require-dev": {
     "symfony/yaml": "~3.0"
