@@ -1,5 +1,4 @@
 /vendor
-composer.lock
 .idea/
 dspec.yml
 /spec
